@@ -370,6 +370,7 @@
 "Assets/Scripts/Card.cs"
 "Assets/Scripts/CardDisplay.cs"
 "Assets/Scripts/Draggable.cs"
+"Assets/Scripts/Hover.cs"
 -langversion:9.0
 
 /deterministic

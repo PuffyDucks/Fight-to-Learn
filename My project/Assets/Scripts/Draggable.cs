@@ -6,15 +6,17 @@ using UnityEngine.EventSystems;
 public class Draggable : MonoBehaviour, IPointerClickHandler
 {
     private bool isMoving = false;
-    private float glideDuration = 16f; // Duration of the glide in seconds
-    private float glideSpeed = 2f; // Speed of the glide calculated based on the duration
+    private float glideDuration = 0.25f; // Duration of the glide in seconds
     private Vector3 initialPosition;
+    private Vector3 targetPosition;
     private float timer;
 
     private void Start()
     {
-        glideSpeed = transform.position.y / glideDuration;
         initialPosition = transform.position;
+        float targetX = 345f; // Set your desired x coordinate here
+        float targetY = 100f; // Set your desired y coordinate here
+        targetPosition = new Vector3(targetX, targetY, initialPosition.z);
     }
 
     private void Update()
@@ -24,14 +26,12 @@ public class Draggable : MonoBehaviour, IPointerClickHandler
             timer += Time.deltaTime;
             if (timer <= glideDuration)
             {
-                float targetX = 345f; // Set your desired x coordinate here
-                float targetY = 120f; // Set your desired y coordinate here
-                Vector3 targetPosition = new Vector3(targetX, targetY, initialPosition.z);
-                transform.position = targetPosition;
+                transform.position = Vector3.Lerp(initialPosition, targetPosition, timer / glideDuration);
             }
             else
             {
                 isMoving = false;
+                transform.position = targetPosition; // Ensures that it exactly reaches the target at the end.
             }
         }
     }
@@ -47,36 +47,7 @@ public class Draggable : MonoBehaviour, IPointerClickHandler
         {
             isMoving = true;
             timer = 0f;
+            initialPosition = transform.position; // Update the initial position each time a new glide is started
         }
-    }
-
-    private IEnumerator FadeOut()
-    {
-        isFading = true;
-
-        // Get the initial color and alpha value
-        Color initialColor = objectRenderer.material.color;
-        float initialAlpha = initialColor.a;
-
-        float timer = 0f;
-        while (timer < fadeDuration)
-        {
-            timer += Time.deltaTime;
-
-            // Calculate the new alpha value
-            float alpha = Mathf.Lerp(initialAlpha, 0f, timer / fadeDuration);
-
-            // Update the object's color with the new alpha value
-            Color newColor = new Color(initialColor.r, initialColor.g, initialColor.b, alpha);
-            objectRenderer.material.color = newColor;
-
-            yield return null;
-        }
-
-        // Set the final alpha value to ensure it's fully faded out
-        Color finalColor = new Color(initialColor.r, initialColor.g, initialColor.b, 0f);
-        objectRenderer.material.color = finalColor;
-
-        isFading = false;
     }
 }
