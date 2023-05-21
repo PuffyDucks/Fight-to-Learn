@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Draggable : MonoBehaviour, IPointerClickHandler
 {
@@ -10,19 +11,23 @@ public class Draggable : MonoBehaviour, IPointerClickHandler
     private Vector3 initialPosition;
     private Vector3 targetPosition;
     private float timer;
+    private AudioSource source;
 
     private void Start()
     {
+        source = GetComponent<AudioSource>();
         initialPosition = transform.position;
         float targetX = 345f; // Set your desired x coordinate here
         float targetY = 100f; // Set your desired y coordinate here
         targetPosition = new Vector3(targetX, targetY, initialPosition.z);
     }
 
+    
     private void Update()
     {
         if (isMoving)
         {
+            source.Play();
             timer += Time.deltaTime;
             if (timer <= glideDuration)
             {
